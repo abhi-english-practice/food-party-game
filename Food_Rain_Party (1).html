@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#55bfe9">
+  <title>Food Rain Party</title>
+  <style>
+    :root{
+      --ink:#17334d;--blue:#63c9ef;--deep:#318fd0;--cream:#fff9e8;--yellow:#ffd84d;
+      --green:#71ca70;--red:#ff6570;--purple:#9a77e8;--shadow:0 10px 0 rgba(25,74,112,.16);
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;font-family:Nunito,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:#65c9ee}
+    button,input{font:inherit}
+    button{border:0;cursor:pointer;color:inherit}
+    button:focus-visible{outline:4px solid #17334d;outline-offset:3px}
+    .screen{position:absolute;inset:0;display:none}
+    .screen.active{display:flex}
+
+    /* START */
+    #startScreen{align-items:center;justify-content:center;padding:20px;overflow:auto;background:
+      radial-gradient(circle at 8% 18%,rgba(255,255,255,.7) 0 4%,transparent 4.2%),
+      radial-gradient(circle at 82% 13%,rgba(255,255,255,.58) 0 5%,transparent 5.2%),
+      linear-gradient(#66cdf3 0 61%,#78d48a 61% 100%)}
+    #startScreen:after{content:"";position:absolute;left:0;right:0;bottom:0;height:26%;opacity:.34;background:repeating-linear-gradient(165deg,transparent 0 28px,#21884d 30px 34px)}
+    .start-card{position:relative;z-index:2;width:min(760px,96vw);padding:clamp(20px,4vw,38px);text-align:center;border:5px solid white;border-radius:36px;background:rgba(255,255,255,.91);box-shadow:0 18px 0 rgba(29,92,129,.2),0 28px 60px rgba(25,74,112,.22)}
+    .logo{position:relative;display:inline-block;margin:0 0 6px;padding:8px 20px 11px;transform:rotate(-2deg);font-size:clamp(35px,8vw,72px);font-weight:1000;line-height:.9;letter-spacing:-3px;color:#fff;text-shadow:0 5px 0 #176da7,3px 0 0 #176da7,-3px 0 0 #176da7;background:var(--yellow);border:5px solid #fff;border-radius:24px;box-shadow:0 6px 0 #2585bd}
+    .logo small{display:block;margin-top:10px;font-size:.42em;letter-spacing:0;color:#ef544d;text-shadow:1px 2px 0 white}
+    .food-parade{height:72px;display:flex;align-items:center;justify-content:center;gap:clamp(8px,3vw,28px);font-size:clamp(34px,7vw,58px)}
+    .food-parade span{animation:bob 1.6s ease-in-out infinite alternate}.food-parade span:nth-child(2){animation-delay:.25s}.food-parade span:nth-child(3){animation-delay:.5s}.food-parade span:nth-child(4){animation-delay:.75s}.food-parade span:nth-child(5){animation-delay:1s}
+    @keyframes bob{to{transform:translateY(-10px) rotate(6deg)}}
+    .start-card h1{margin:6px 0 3px;font-size:clamp(26px,4.5vw,43px)}
+    .subtitle{margin:0 auto 16px;font-size:clamp(15px,2.4vw,20px);font-weight:800;color:#42637b}
+    .how{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+    .how div{padding:11px 8px;border-radius:16px;background:#eff9ff;font-weight:800;font-size:clamp(12px,2vw,16px)}
+    .how b{display:block;font-size:24px;margin-bottom:2px}
+    .name-row{display:flex;gap:10px;margin:14px auto;max-width:500px}
+    #playerName{min-width:0;flex:1;padding:14px 17px;border:3px solid #b7d9eb;border-radius:16px;background:#fff;font-size:18px;color:var(--ink);outline:0}
+    #playerName:focus{border-color:#4ba8dc}
+    .primary{min-width:180px;padding:15px 26px;border-radius:18px;background:linear-gradient(#79db78,#55b857);color:#fff;font-size:22px;font-weight:1000;box-shadow:0 7px 0 #318e3d;text-shadow:0 2px 0 rgba(0,0,0,.13);transition:.12s}
+    .primary:active{transform:translateY(5px);box-shadow:0 2px 0 #318e3d}
+    .small-note{margin:13px 0 0;color:#61788b;font-size:13px;font-weight:700}
+
+    /* GAME */
+    #gameScreen{flex-direction:column;background:#76cff0}
+    .sky{position:absolute;inset:0 0 25% 0;overflow:hidden;background:linear-gradient(#66c9ef,#d9f6ff)}
+    .cloud{position:absolute;width:140px;height:44px;border-radius:50px;background:rgba(255,255,255,.8);filter:drop-shadow(0 4px 0 rgba(48,132,174,.1));animation:cloudMove 24s linear infinite}
+    .cloud:before,.cloud:after{content:"";position:absolute;border-radius:50%;background:inherit}.cloud:before{width:62px;height:62px;left:22px;bottom:5px}.cloud:after{width:76px;height:76px;right:18px;bottom:2px}
+    .cloud.c1{top:19%;left:-160px}.cloud.c2{top:42%;left:-260px;transform:scale(.7);animation-delay:-11s;animation-duration:29s}.cloud.c3{top:8%;left:-360px;transform:scale(1.2);animation-delay:-17s;animation-duration:35s}
+    @keyframes cloudMove{to{left:calc(100% + 180px)}}
+    .hills{position:absolute;inset:auto 0 0;height:34%;background:linear-gradient(165deg,transparent 0 15%,#9ee686 15.5% 42%,transparent 42.5%),linear-gradient(195deg,transparent 0 12%,#65cb78 12.5% 50%,#39aa66 50.5%)}
+    .hud{position:relative;z-index:30;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:max(10px,env(safe-area-inset-top)) 12px 10px;background:rgba(255,255,255,.86);box-shadow:0 3px 0 rgba(25,74,112,.12);backdrop-filter:blur(8px)}
+    .pill{display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:100px;background:#fff;border:2px solid #d8edf6;font-size:15px;font-weight:1000;white-space:nowrap}
+    .level-pill{background:#fff1a5;border-color:#ffd84d}
+    .progress-wrap{min-width:80px;text-align:center;font-size:13px;font-weight:1000}
+    .progress{height:12px;margin-top:3px;border:2px solid #bedbe8;border-radius:20px;background:#eaf5f8;overflow:hidden}
+    #progressFill{width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#66cc71,#ffd84d);transition:width .35s}
+    .hud-right{display:flex;gap:7px}.icon-btn{width:43px;height:43px;border:2px solid #d0e7f1;border-radius:14px;background:white;font-size:21px;font-weight:1000;box-shadow:0 3px 0 #b5d4e1}.icon-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #b5d4e1}
+    #playfield{position:relative;z-index:4;flex:1;overflow:hidden;touch-action:manipulation;user-select:none}
+    .instruction{position:absolute;z-index:25;left:50%;top:12px;transform:translateX(-50%);width:min(95%,720px);display:grid;grid-template-columns:54px 1fr auto;align-items:center;gap:10px;padding:10px 14px;border:4px solid #fff;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:var(--shadow)}
+    #repeatBtn{width:48px;height:48px;border-radius:16px;background:#e9f7ff;font-size:26px}
+    .instruction-text{min-width:0}.eyebrow{font-size:12px;font-weight:1000;letter-spacing:1px;color:#6092ad}.order-line{font-size:clamp(18px,3.2vw,28px);font-weight:1000;line-height:1.18}.order-line .accent{color:#ef5360}.order-line .join{color:#628297;font-size:.76em;padding:0 3px}
+    .counter{min-width:154px;display:grid;gap:4px;padding:7px 9px;text-align:left;border-radius:15px;background:#fff1a5;font-size:14px;font-weight:1000;color:#805900}.counter-line{display:flex;align-items:center;justify-content:space-between;gap:8px;white-space:nowrap}.counter-line b{font-size:18px;color:#a45d00}
+    .food{position:absolute;z-index:8;width:clamp(66px,10vw,98px);height:clamp(66px,10vw,98px);display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.72);border:4px solid rgba(255,255,255,.95);box-shadow:0 7px 0 rgba(25,74,112,.13);font-size:clamp(40px,7vw,66px);line-height:1;animation-name:fall;animation-timing-function:linear;animation-fill-mode:forwards;will-change:transform;touch-action:manipulation}
+    .food:after{content:"";position:absolute;inset:-8px;border-radius:50%;border:3px dashed rgba(255,255,255,.0)}
+    .food:hover:after{border-color:rgba(255,255,255,.8)}
+    .food.hit{animation:none!important;transition:.32s;transform:scale(1.7) rotate(20deg);opacity:0}
+    .food.wrong{animation-play-state:paused;filter:grayscale(.6);animation:wrong .35s ease}
+    @keyframes fall{from{transform:translateY(-120px) rotate(-12deg)}to{transform:translateY(calc(100vh - 100px)) rotate(190deg)}}
+    @keyframes wrong{25%,75%{translate:-9px 0}50%{translate:9px 0}}
+    .basket-zone{position:relative;z-index:12;height:122px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:max(8px,env(safe-area-inset-bottom));background:linear-gradient(transparent,#45ad67 38%,#299359)}
+    .basket{position:relative;width:190px;height:76px;border:7px solid #fff;border-top:0;border-radius:8px 8px 60px 60px;background:repeating-linear-gradient(45deg,#ffb747 0 13px,#e98734 13px 26px);box-shadow:0 6px 0 rgba(20,80,48,.22)}
+    .basket:before{content:"";position:absolute;left:20px;right:20px;top:-34px;height:54px;border:8px solid #fff;border-bottom:0;border-radius:70px 70px 0 0}
+    #basketFood{position:absolute;left:50%;bottom:52px;transform:translateX(-50%);max-width:320px;height:50px;font-size:40px;letter-spacing:-16px;white-space:nowrap;filter:drop-shadow(0 3px 1px rgba(0,0,0,.15))}
+    .score-board{position:absolute;left:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:15;display:flex;gap:8px}.score-board .pill{background:rgba(255,255,255,.9);border:0}
+    #hearts{letter-spacing:2px}
+    .combo{position:absolute;right:14px;bottom:22px;z-index:15;padding:7px 13px;border-radius:100px;background:#784ee2;color:#fff;font-weight:1000;opacity:0;transform:scale(.7);transition:.2s}.combo.show{opacity:1;transform:scale(1)}
+    .toast{position:absolute;z-index:60;left:50%;top:46%;transform:translate(-50%,-50%) scale(.8);padding:14px 25px;border:5px solid #fff;border-radius:24px;color:#fff;font-size:clamp(25px,6vw,48px);font-weight:1000;text-shadow:0 3px 0 rgba(0,0,0,.15);box-shadow:0 10px 0 rgba(25,74,112,.2);opacity:0;pointer-events:none;transition:.22s}.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}.toast.good{background:#57bf62}.toast.bad{background:#f06470}
+
+    /* MODALS */
+    .modal{position:absolute;z-index:100;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(20,52,78,.5);backdrop-filter:blur(7px)}
+    .modal.show{display:flex}.modal-card{width:min(540px,95vw);max-height:90vh;overflow:auto;padding:28px;text-align:center;border:5px solid #fff;border-radius:30px;background:#fffdf5;box-shadow:0 14px 0 rgba(25,74,112,.22)}
+    .modal-card h2{margin:0 0 8px;font-size:clamp(29px,7vw,48px)}.stars{font-size:45px;letter-spacing:6px}.modal-card p{font-weight:750;color:#49697e}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:19px 0}.stat{padding:12px 5px;border-radius:17px;background:#edf8fd}.stat b{display:block;font-size:25px;color:#287fae}.modal-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}.secondary{padding:13px 18px;border-radius:16px;background:#e9f4f8;font-weight:1000;box-shadow:0 4px 0 #c4dbe4}.secondary:active{transform:translateY(3px);box-shadow:0 1px 0 #c4dbe4}
+    .mini-levels{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:18px 0}.mini-level{padding:8px 2px;border-radius:11px;background:#dfeff5;font-weight:1000}.mini-level.done{background:#79d37c;color:#fff}.mini-level.current{outline:4px solid #ffd84d}
+    .switch-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:13px 0;border-bottom:1px solid #dceaf0;text-align:left;font-weight:900}.switch{position:relative;width:56px;height:32px;flex:0 0 auto}.switch input{opacity:0;width:0;height:0}.slider{position:absolute;inset:0;border-radius:40px;background:#b9cad2;transition:.2s}.slider:before{content:"";position:absolute;width:24px;height:24px;left:4px;top:4px;border-radius:50%;background:#fff;transition:.2s}.switch input:checked+.slider{background:#62c86d}.switch input:checked+.slider:before{transform:translateX(24px)}
+    .confetti{position:absolute;z-index:110;top:-20px;width:12px;height:20px;border-radius:3px;animation:confetti 2.2s linear forwards}@keyframes confetti{to{transform:translateY(110vh) rotate(720deg)}}
+    .hidden-text .order-words{display:none}.hidden-text .order-line:after{content:"Listen carefully!";color:#3b7391}
+    .paused .food{animation-play-state:paused}.paused #playfield:after{content:"PAUSED";position:absolute;z-index:50;inset:0;display:grid;place-items:center;background:rgba(23,51,77,.35);color:white;font-size:clamp(44px,10vw,90px);font-weight:1000;text-shadow:0 5px 0 #17334d}
+    @media(max-width:620px){.hud{grid-template-columns:auto 1fr auto;gap:5px;padding-left:7px;padding-right:7px}.pill{padding:7px 9px}.hud-right .icon-btn:nth-child(3){display:none}.instruction{grid-template-columns:47px 1fr;top:8px;padding:8px 10px}.counter{grid-column:1/-1;display:flex;justify-content:center;gap:8px;min-width:0;padding:5px 7px}.counter-line{padding:1px 7px;border-radius:10px;background:rgba(255,255,255,.55)}.score-board{bottom:9px;left:7px}.score-board .pill{font-size:12px;padding:6px 8px}.basket-zone{height:108px}.basket{width:150px;height:62px}.how{grid-template-columns:1fr}.how div{display:flex;align-items:center;gap:9px;text-align:left;padding:7px 12px}.how b{margin:0}.name-row{flex-direction:column}.start-card{padding:20px 16px}.food{width:68px;height:68px;font-size:44px}}
+    @media(max-height:650px){.food-parade{height:50px}.how{margin:6px 0}.how div{padding:5px}.start-card{padding-top:14px;padding-bottom:14px}.small-note{display:none}.instruction{top:5px}.basket-zone{height:92px}.basket{height:55px}}
+  </style>
+</head>
+<body>
+  <section id="startScreen" class="screen active">
+    <main class="start-card">
+      <div class="logo">FOOD<small>RAIN PARTY</small></div>
+      <div class="food-parade" aria-hidden="true"><span>🍎</span><span>🍕</span><span>🍋</span><span>🍔</span><span>🧁</span></div>
+      <h1>Listen, tap &amp; collect!</h1>
+      <p class="subtitle">Mỗi lượt: 1 món ăn + 1 đồ uống • Số lượng từ 2 trở lên</p>
+      <div class="how">
+        <div><b>🔊</b> Nghe câu lệnh</div><div><b>👆</b> Chạm món đúng</div><div><b>🏆</b> Vượt 6 cấp độ</div>
+      </div>
+      <div class="name-row">
+        <input id="playerName" maxlength="18" placeholder="Tên học sinh (không bắt buộc)" aria-label="Tên học sinh">
+        <button id="startBtn" class="primary">▶ PLAY</button>
+      </div>
+      <p class="small-note">Âm thanh dùng giọng đọc tiếng Anh có sẵn trên thiết bị • Chơi được cả khi không có mạng</p>
+    </main>
+  </section>
+
+  <section id="gameScreen" class="screen" aria-label="Food Rain Party game">
+    <div class="sky"><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="hills"></div></div>
+    <header class="hud">
+      <div class="pill level-pill">⭐ <span id="levelText">Level 1</span></div>
+      <div class="progress-wrap"><span id="roundText">Order 1/4</span><div class="progress"><div id="progressFill"></div></div></div>
+      <div class="hud-right"><button id="soundBtn" class="icon-btn" title="Bật/tắt âm thanh" aria-label="Bật tắt âm thanh">🔊</button><button id="pauseBtn" class="icon-btn" title="Tạm dừng" aria-label="Tạm dừng">⏸</button><button id="fullBtn" class="icon-btn" title="Toàn màn hình" aria-label="Toàn màn hình">⛶</button></div>
+    </header>
+    <div id="playfield">
+      <div id="instruction" class="instruction">
+        <button id="repeatBtn" title="Nghe lại" aria-label="Nghe lại">🔊</button>
+        <div class="instruction-text"><div class="eyebrow">LISTEN &amp; TAP</div><div class="order-line"><span id="orderWords" class="order-words">3 bananas <span class="join">AND</span> 2 cups of coffee</span></div></div>
+        <div id="counter" class="counter" aria-live="polite"></div>
+      </div>
+      <div id="toast" class="toast">Great!</div>
+    </div>
+    <div class="basket-zone"><div id="basketFood" aria-hidden="true"></div><div class="basket" aria-label="Food basket"></div><div class="score-board"><div class="pill">🏆 <span id="scoreText">0</span></div><div class="pill"><span id="hearts">❤️❤️❤️</span></div></div><div id="combo" class="combo">COMBO ×2</div></div>
+  </section>
+
+  <div id="levelModal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="stars">⭐⭐⭐</div><h2 id="levelTitle">Level complete!</h2><p id="levelMessage">Brilliant listening!</p>
+      <div class="stats"><div class="stat"><b id="modalScore">0</b>Điểm</div><div class="stat"><b id="modalAccuracy">100%</b>Chính xác</div><div class="stat"><b id="modalSpeed">Slow</b>Tốc độ đọc</div></div>
+      <div id="levelMap" class="mini-levels"></div>
+      <div class="modal-actions"><button id="nextLevelBtn" class="primary">NEXT LEVEL ▶</button></div>
+    </div>
+  </div>
+
+  <div id="endModal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="stars">🏆✨🏆</div><h2>Food Rain Champion!</h2><p id="finalMessage">Amazing work!</p>
+      <div class="stats"><div class="stat"><b id="finalScore">0</b>Tổng điểm</div><div class="stat"><b id="finalAccuracy">100%</b>Chính xác</div><div class="stat"><b>6/6</b>Levels</div></div>
+      <div class="modal-actions"><button id="restartBtn" class="primary">↻ PLAY AGAIN</button><button id="homeBtn" class="secondary">⌂ HOME</button></div>
+    </div>
+  </div>
+
+  <div id="pauseModal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-card"><h2>⏸ Paused</h2><p>Nghỉ một chút nhé!</p>
+      <div class="switch-row"><span>Hiện câu lệnh bằng chữ</span><label class="switch"><input id="showTextToggle" type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="switch-row"><span>Âm thanh hiệu ứng</span><label class="switch"><input id="effectsToggle" type="checkbox" checked><span class="slider"></span></label></div>
+      <div class="modal-actions" style="margin-top:18px"><button id="resumeBtn" class="primary">▶ CONTINUE</button><button id="quitBtn" class="secondary">⌂ HOME</button></div>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+    const FOODS=[
+      {name:'apple',plural:'apples',emoji:'🍎',type:'food'}, {name:'banana',plural:'bananas',emoji:'🍌',type:'food'},
+      {name:'slice of pizza',plural:'slices of pizza',emoji:'🍕',type:'food'}, {name:'piece of cake',plural:'pieces of cake',emoji:'🍰',type:'food'},
+      {name:'burger',plural:'burgers',emoji:'🍔',type:'food'}, {name:'ice cream cone',plural:'ice cream cones',emoji:'🍦',type:'food'},
+      {name:'strawberry',plural:'strawberries',emoji:'🍓',type:'food'}, {name:'slice of watermelon',plural:'slices of watermelon',emoji:'🍉',type:'food'},
+      {name:'cookie',plural:'cookies',emoji:'🍪',type:'food'}, {name:'sandwich',plural:'sandwiches',emoji:'🥪',type:'food'},
+      {name:'carrot',plural:'carrots',emoji:'🥕',type:'food'}, {name:'doughnut',plural:'doughnuts',emoji:'🍩',type:'food'},
+      {name:'taco',plural:'tacos',emoji:'🌮',type:'food'}, {name:'bowl of rice',plural:'bowls of rice',emoji:'🍚',type:'food'},
+      {name:'cup of coffee',plural:'cups of coffee',emoji:'☕',type:'drink'}, {name:'glass of milk',plural:'glasses of milk',emoji:'🥛',type:'drink'},
+      {name:'glass of juice',plural:'glasses of juice',emoji:'🧃',type:'drink'}, {name:'bottle of water',plural:'bottles of water',emoji:'💧',type:'drink'},
+      {name:'cup of tea',plural:'cups of tea',emoji:'🍵',type:'drink'}, {name:'glass of lemonade',plural:'glasses of lemonade',emoji:'🍋',type:'drink'}
+    ];
+    const FOOD_ITEMS=FOODS.filter(x=>x.type==='food');
+    const DRINK_ITEMS=FOODS.filter(x=>x.type==='drink');
+    const LEVELS=[
+      {min:2,max:3,foodPool:5,drinkPool:3,rate:.78,fall:7.0,spawn:760,label:'Quick start'},
+      {min:2,max:4,foodPool:7,drinkPool:4,rate:.91,fall:6.1,spawn:650,label:'Faster'},
+      {min:3,max:5,foodPool:9,drinkPool:5,rate:1.04,fall:5.3,spawn:560,label:'Natural +'},
+      {min:3,max:6,foodPool:11,drinkPool:6,rate:1.17,fall:4.6,spawn:480,label:'Fast'},
+      {min:4,max:7,foodPool:13,drinkPool:6,rate:1.30,fall:4.0,spawn:410,label:'Very fast'},
+      {min:5,max:9,foodPool:14,drinkPool:6,rate:1.42,fall:3.4,spawn:350,label:'Lightning'}
+    ];
+    const ROUNDS_PER_LEVEL=4;
+    const praises=['Great!','Amazing!','Well done!','Fantastic!','You got it!'];
+    const $=s=>document.querySelector(s);
+    const state={level:0,round:0,score:0,hearts:3,targets:[],running:false,paused:false,sound:true,effects:true,correctTaps:0,totalTaps:0,combo:0,lastFood:-1,lastDrink:-1,spawnTimer:null,nextRoundTimer:null,voice:null,basket:[]};
+    let audioCtx=null;
+
+    function showScreen(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active')}
+    function chooseVoice(){
+      const voices=speechSynthesis.getVoices();
+      state.voice=voices.find(v=>/^en-(GB|US|AU)/.test(v.lang)&&/female|samantha|zira|serena|google uk english female/i.test(v.name))||voices.find(v=>/^en/.test(v.lang))||null;
+    }
+    chooseVoice(); if('speechSynthesis' in window) speechSynthesis.onvoiceschanged=chooseVoice;
+    function numberWord(n){return ['zero','one','two','three','four','five','six','seven','eight','nine'][n]||String(n)}
+    function itemPhrase(target){return `${numberWord(target.count)} ${target.count===1?target.item.name:target.item.plural}`}
+    function orderPhrase(){return `${itemPhrase(state.targets[0])} and ${itemPhrase(state.targets[1])}.`}
+    function speakOrder(){
+      if(!state.sound||!('speechSynthesis' in window))return;
+      speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(orderPhrase());u.lang='en-US';u.rate=LEVELS[state.level].rate;u.pitch=1.08;u.volume=1;if(state.voice)u.voice=state.voice;speechSynthesis.speak(u);
+    }
+    function beep(kind){
+      if(!state.effects)return;
+      try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);const t=audioCtx.currentTime;
+        if(kind==='good'){o.frequency.setValueAtTime(520,t);o.frequency.exponentialRampToValueAtTime(900,t+.12)}else{o.frequency.setValueAtTime(210,t);o.frequency.exponentialRampToValueAtTime(120,t+.18)}g.gain.setValueAtTime(.08,t);g.gain.exponentialRampToValueAtTime(.001,t+.25);o.start(t);o.stop(t+.26)}catch(e){}
+    }
+    function randomInt(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+    function updateHud(){
+      $('#levelText').textContent=`Level ${state.level+1}`;$('#roundText').textContent=`Order ${state.round+1}/${ROUNDS_PER_LEVEL}`;
+      $('#progressFill').style.width=`${((state.round)/ROUNDS_PER_LEVEL)*100}%`;$('#scoreText').textContent=state.score;
+      $('#hearts').textContent='❤️'.repeat(state.hearts)+'🤍'.repeat(3-state.hearts);
+      $('#counter').innerHTML=state.targets.map(t=>`<span class="counter-line"><span>${t.item.emoji} ${t.item.plural}</span><b>${t.tapped}/${t.count}</b></span>`).join('');
+    }
+    function clearFoods(){document.querySelectorAll('.food').forEach(x=>x.remove())}
+    function pickTarget(items,cap,lastKey){
+      let idx;do{idx=randomInt(0,cap-1)}while(idx===state[lastKey]&&cap>1);state[lastKey]=idx;return items[idx];
+    }
+    function beginGame(){
+      state.level=0;state.round=0;state.score=0;state.hearts=3;state.correctTaps=0;state.totalTaps=0;state.combo=0;state.lastFood=-1;state.lastDrink=-1;state.basket=[];
+      $('#basketFood').textContent='';showScreen('#gameScreen');state.running=true;state.paused=false;startRound();
+    }
+    function startRound(){
+      clearTimeout(state.spawnTimer);clearTimeout(state.nextRoundTimer);clearFoods();speechSynthesis.cancel();
+      state.combo=0;state.hearts=3;const cfg=LEVELS[state.level];
+      const food=pickTarget(FOOD_ITEMS,cfg.foodPool,'lastFood'),drink=pickTarget(DRINK_ITEMS,cfg.drinkPool,'lastDrink');
+      state.targets=[{item:food,count:randomInt(cfg.min,cfg.max),tapped:0},{item:drink,count:randomInt(cfg.min,cfg.max),tapped:0}];
+      if(Math.random()>.5)state.targets.reverse();state.basket=[];$('#basketFood').textContent='';
+      $('#orderWords').innerHTML=`<span class="accent">${state.targets[0].count}</span> ${state.targets[0].item.plural} <span class="join">AND</span> <span class="accent">${state.targets[1].count}</span> ${state.targets[1].item.plural}`;updateHud();
+      setTimeout(speakOrder,300);scheduleSpawn(750);
+    }
+    function scheduleSpawn(delay){clearTimeout(state.spawnTimer);if(!state.running||state.paused)return;state.spawnTimer=setTimeout(()=>{spawnFood();scheduleSpawn(LEVELS[state.level].spawn)},delay)}
+    function spawnFood(){
+      if(!state.running||state.paused)return;const field=$('#playfield');if(field.querySelectorAll('.food').length>11)return;
+      const cfg=LEVELS[state.level],active=state.targets.filter(t=>t.tapped<t.count);let f;
+      if(active.length&&Math.random()<.56)f=active[randomInt(0,active.length-1)].item;
+      else{const pool=[...FOOD_ITEMS.slice(0,cfg.foodPool),...DRINK_ITEMS.slice(0,cfg.drinkPool)];do{f=pool[randomInt(0,pool.length-1)]}while(state.targets.some(t=>t.item===f))}
+      const el=document.createElement('button');el.className='food';el.type='button';el.textContent=f.emoji;el.setAttribute('aria-label',f.name);el.dataset.name=f.name;
+      const size=window.innerWidth<620?68:88;el.style.left=`${randomInt(4,Math.max(5,field.clientWidth-size-4))}px`;el.style.animationDuration=`${(LEVELS[state.level].fall*(.88+Math.random()*.26)).toFixed(2)}s`;el.style.animationDelay=`-${(Math.random()*.35).toFixed(2)}s`;
+      el.addEventListener('pointerdown',e=>{e.preventDefault();tapFood(el,f)});el.addEventListener('animationend',()=>el.remove());field.appendChild(el);
+    }
+    function tapFood(el,f){
+      if(!state.running||state.paused||el.disabled)return;el.disabled=true;state.totalTaps++;
+      const target=state.targets.find(t=>t.item===f);
+      if(target&&target.tapped<target.count){
+        state.correctTaps++;target.tapped++;state.combo++;state.score+=10+Math.min(20,(state.combo-1)*2);state.basket.push(f.emoji);$('#basketFood').textContent=state.basket.join('');el.classList.add('hit');beep('good');showToast(praises[randomInt(0,praises.length-1)],true);
+        if(state.combo>=2){$('#combo').textContent=`COMBO ×${state.combo}`;$('#combo').classList.add('show')}updateHud();
+        if(state.targets.every(t=>t.tapped>=t.count)){clearTimeout(state.spawnTimer);speechSynthesis.cancel();$('#progressFill').style.width=`${((state.round+1)/ROUNDS_PER_LEVEL)*100}%`;state.score+=40;updateHud();state.nextRoundTimer=setTimeout(finishRound,700)}
+      }else{
+        state.combo=0;$('#combo').classList.remove('show');state.hearts--;state.score=Math.max(0,state.score-5);el.classList.add('wrong');beep('bad');showToast(`Oops! Tap ${state.targets.map(t=>t.item.emoji).join(' or ')}`,false);setTimeout(()=>el.remove(),320);updateHud();
+        if(state.hearts<=0){state.hearts=3;setTimeout(()=>{showToast('Listen again!',false);speakOrder();updateHud()},500)}
+      }
+    }
+    function showToast(msg,good){const t=$('#toast');t.textContent=msg;t.className=`toast ${good?'good':'bad'} show`;clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),520)}
+    function finishRound(){
+      state.round++;if(state.round<ROUNDS_PER_LEVEL){startRound();return}state.running=false;clearFoods();showLevelComplete();
+    }
+    function accuracy(){return state.totalTaps?Math.round(state.correctTaps/state.totalTaps*100):100}
+    function makeLevelMap(){const box=$('#levelMap');box.innerHTML='';LEVELS.forEach((_,i)=>{const d=document.createElement('div');d.className='mini-level '+(i<=state.level?'done':'')+(i===state.level?' current':'');d.textContent=i+1;box.appendChild(d)})}
+    function showLevelComplete(){
+      const last=state.level===LEVELS.length-1;if(last){showFinal();return}
+      $('#levelTitle').textContent=`Level ${state.level+1} complete!`;$('#levelMessage').textContent=accuracy()>=85?'Brilliant listening! Tốc độ sẽ nhanh hơn.':'Good effort! Sẵn sàng nghe nhanh hơn nhé!';$('#modalScore').textContent=state.score;$('#modalAccuracy').textContent=accuracy()+'%';$('#modalSpeed').textContent=LEVELS[state.level].label;makeLevelMap();$('#levelModal').classList.add('show');confetti(32);
+    }
+    function nextLevel(){$('#levelModal').classList.remove('show');state.level++;state.round=0;state.running=true;startRound()}
+    function showFinal(){
+      $('#finalScore').textContent=state.score;$('#finalAccuracy').textContent=accuracy()+'%';const name=$('#playerName').value.trim();$('#finalMessage').textContent=`${name?name+', y':'Y'}ou completed all 6 levels. Excellent listening!`;$('#endModal').classList.add('show');confetti(70);
+    }
+    function confetti(n){const colors=['#ff6570','#ffd84d','#62c86d','#62c9ef','#9a77e8'];for(let i=0;i<n;i++){const x=document.createElement('i');x.className='confetti';x.style.left=Math.random()*100+'vw';x.style.background=colors[i%colors.length];x.style.animationDelay=Math.random()*.7+'s';x.style.animationDuration=1.6+Math.random()*1.6+'s';document.body.appendChild(x);setTimeout(()=>x.remove(),3500)}}
+    function togglePause(force){
+      if(!$('#gameScreen').classList.contains('active'))return;const pause=typeof force==='boolean'?force:!state.paused;state.paused=pause;
+      if(pause){clearTimeout(state.spawnTimer);speechSynthesis.cancel();$('#gameScreen').classList.add('paused');$('#pauseModal').classList.add('show')}else{$('#pauseModal').classList.remove('show');$('#gameScreen').classList.remove('paused');if(state.running)scheduleSpawn(300)}
+    }
+    function goHome(){state.running=false;clearTimeout(state.spawnTimer);clearTimeout(state.nextRoundTimer);clearFoods();speechSynthesis.cancel();document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show'));$('#gameScreen').classList.remove('paused');showScreen('#startScreen')}
+    function toggleSound(){state.sound=!state.sound;$('#soundBtn').textContent=state.sound?'🔊':'🔇';if(!state.sound)speechSynthesis.cancel();else speakOrder()}
+
+    $('#startBtn').addEventListener('click',beginGame);$('#repeatBtn').addEventListener('click',speakOrder);$('#soundBtn').addEventListener('click',toggleSound);$('#pauseBtn').addEventListener('click',()=>togglePause());$('#resumeBtn').addEventListener('click',()=>togglePause(false));$('#quitBtn').addEventListener('click',goHome);$('#nextLevelBtn').addEventListener('click',nextLevel);$('#restartBtn').addEventListener('click',()=>{$('#endModal').classList.remove('show');beginGame()});$('#homeBtn').addEventListener('click',goHome);
+    $('#showTextToggle').addEventListener('change',e=>$('#instruction').classList.toggle('hidden-text',!e.target.checked));$('#effectsToggle').addEventListener('change',e=>state.effects=e.target.checked);
+    $('#fullBtn').addEventListener('click',()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.running&&!state.paused)togglePause(true)});
+    document.addEventListener('keydown',e=>{if(e.code==='Space'&&$('#gameScreen').classList.contains('active')){e.preventDefault();speakOrder()}if(e.code==='Escape'&&state.running&&!state.paused)togglePause(true)});
+  </script>
+</body>
+</html>
